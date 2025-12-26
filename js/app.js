@@ -1,5 +1,8 @@
-const BACKEND_URL = "https://sbi-backend.onrender.com"; // 🔴 CHANGE IF NEEDED
+const BACKEND_URL = "https://sbi-backend.onrender.com"; // DO NOT CHANGE
 
+// =======================
+// SCAN APK FUNCTION
+// =======================
 function scanApk() {
   const fileInput = document.getElementById("apk");
   const loading = document.getElementById("loading");
@@ -11,16 +14,29 @@ function scanApk() {
 
   const file = fileInput.files[0];
 
+  // Show loading
   loading.classList.remove("hidden");
 
   const formData = new FormData();
-  formData.append("apk", file); // 🔴 key must be "apk"
+  formData.append("apk", file); // backend expects "apk"
+
+  // ⏱ Timeout controller (Render sleep handling)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 sec
 
   fetch(`${BACKEND_URL}/scan`, {
     method: "POST",
-    body: formData
+    body: formData,
+    signal: controller.signal
   })
-    .then(response => response.json())
+    .then(response => {
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error("Server not ready");
+      }
+      return response.json();
+    })
     .then(data => {
       loading.classList.add("hidden");
 
@@ -29,24 +45,39 @@ function scanApk() {
         return;
       }
 
+      // Save result & redirect
       localStorage.setItem("scanResult", JSON.stringify(data));
       window.location.href = "result.html";
     })
     .catch(error => {
       loading.classList.add("hidden");
-      alert("Backend connection failed");
-      console.error(error);
+
+      if (error.name === "AbortError") {
+        alert(
+          "Backend is waking up (free server).\n\n" +
+          "Please wait 30 seconds and click Analyze again."
+        );
+      } else {
+        alert(
+          "Backend connection lost.\n\n" +
+          "Please retry in 30 seconds."
+        );
+      }
+
+      console.error("Scan error:", error);
     });
 }
 
 
-// 🔹 RESULT PAGE LOGIC
+// =======================
+// RESULT PAGE LOGIC
+// =======================
 if (window.location.pathname.includes("result.html")) {
 
   const raw = localStorage.getItem("scanResult");
 
   if (!raw) {
-    alert("No scan data found");
+    alert("No scan data found. Please scan again.");
     window.location.href = "index.html";
   }
 
@@ -61,7 +92,7 @@ if (window.location.pathname.includes("result.html")) {
   const ul = document.getElementById("permissions");
   ul.innerHTML = "";
 
-  if (data.dangerous_permissions.length === 0) {
+  if (!data.dangerous_permissions || data.dangerous_permissions.length === 0) {
     ul.innerHTML = "<li>No dangerous permissions found</li>";
   } else {
     data.dangerous_permissions.forEach(p => {
