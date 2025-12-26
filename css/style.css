@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: white;
+}
+
+.card {
+  background: #111;
+  width: 90%;
+  max-width: 360px;
+  margin: 80px auto;
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+}
+
+.logo {
+  width: 80px;
+  margin-bottom: 15px;
+}
+
+.btn {
+  display: block;
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.primary { background: #00e676; color: black; }
+.danger  { background: #ff5252; color: white; }
+.safe    { background: #2979ff; color: white; }
+
+.hidden { display:none; }
