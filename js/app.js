@@ -1,9 +1,6 @@
-const BACKEND_URL = "https://sbi-backend.onrender.com"; // DO NOT CHANGE
+const BACKEND_URL = "https://sbi-backend.onrender.com";
 
-// =======================
-// SCAN APK FUNCTION
-// =======================
-function scanApk() {
+async function scanApk() {
   const fileInput = document.getElementById("apk");
   const loading = document.getElementById("loading");
 
@@ -13,31 +10,27 @@ function scanApk() {
   }
 
   const file = fileInput.files[0];
-
-  // Show loading
   loading.classList.remove("hidden");
 
   const formData = new FormData();
-  formData.append("apk", file); // backend expects "apk"
+  formData.append("apk", file);
 
-  // ⏱ Timeout controller (Render sleep handling)
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 sec
+  // 🔁 auto retry logic
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), 60000);
 
-  fetch(`${BACKEND_URL}/scan`, {
-    method: "POST",
-    body: formData,
-    signal: controller.signal
-  })
-    .then(response => {
-      clearTimeout(timeoutId);
+      const response = await fetch(`${BACKEND_URL}/scan`, {
+        method: "POST",
+        body: formData,
+        signal: controller.signal
+      });
 
-      if (!response.ok) {
-        throw new Error("Server not ready");
-      }
-      return response.json();
-    })
-    .then(data => {
+      if (!response.ok) throw new Error("Server not ready");
+
+      const data = await response.json();
+
       loading.classList.add("hidden");
 
       if (data.error) {
@@ -45,60 +38,19 @@ function scanApk() {
         return;
       }
 
-      // Save result & redirect
       localStorage.setItem("scanResult", JSON.stringify(data));
       window.location.href = "result.html";
-    })
-    .catch(error => {
-      loading.classList.add("hidden");
+      return;
 
-      if (error.name === "AbortError") {
-        alert(
-          "Backend is waking up (free server).\n\n" +
-          "Please wait 30 seconds and click Analyze again."
-        );
+    } catch (err) {
+      if (attempt === 1) {
+        console.log("Backend sleeping, retrying...");
+        await new Promise(res => setTimeout(res, 30000)); // wait 30 sec
       } else {
-        alert(
-          "Backend connection lost.\n\n" +
-          "Please retry in 30 seconds."
-        );
+        loading.classList.add("hidden");
+        alert("Backend busy. Please try again after 1 minute.");
+        return;
       }
-
-      console.error("Scan error:", error);
-    });
-}
-
-
-// =======================
-// RESULT PAGE LOGIC
-// =======================
-if (window.location.pathname.includes("result.html")) {
-
-  const raw = localStorage.getItem("scanResult");
-
-  if (!raw) {
-    alert("No scan data found. Please scan again.");
-    window.location.href = "index.html";
-  }
-
-  const data = JSON.parse(raw);
-
-  document.getElementById("riskLevel").innerText =
-    `Risk Level: ${data.risk_level}`;
-
-  document.getElementById("score").innerText =
-    `Risk Score: ${data.risk_score}%`;
-
-  const ul = document.getElementById("permissions");
-  ul.innerHTML = "";
-
-  if (!data.dangerous_permissions || data.dangerous_permissions.length === 0) {
-    ul.innerHTML = "<li>No dangerous permissions found</li>";
-  } else {
-    data.dangerous_permissions.forEach(p => {
-      const li = document.createElement("li");
-      li.innerText = `${p.permission} – ${p.risk}`;
-      ul.appendChild(li);
-    });
+    }
   }
 }
