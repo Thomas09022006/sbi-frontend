@@ -9,10 +9,12 @@
 <div class="card">
   <h2>Upload APK</h2>
 
-  <input type="file" id="apk" accept=".apk">
-  <button class="btn primary" onclick="scanApk()">Analyze</button>
+  <div class="upload-row">
+    <input type="file" id="apk" accept=".apk">
+    <button class="btn primary" onclick="scanApk()">Analyze</button>
+  </div>
 
-  <p id="loading" class="hidden">🔍 Scanning…</p>
+  <p id="loading" class="loading hidden">🔍 Scanning…</p>
 </div>
 
 <script src="js/app.js"></script>

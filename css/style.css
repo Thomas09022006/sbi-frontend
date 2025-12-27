@@ -4,6 +4,7 @@ body {
   color: white;
 }
 
+/* Card */
 .card {
   width: 350px;
   margin: 40px auto;
@@ -12,13 +13,61 @@ body {
   border-radius: 12px;
 }
 
-.label {
-  color: #aaa;
+.center {
+  text-align: center;
+}
+
+.logo {
+  width: 60px;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Upload alignment */
+.upload-row {
+  display: flex;
+  gap: 12px;
   margin-top: 15px;
 }
 
-h1 {
-  margin: 5px 0;
+.upload-row input[type="file"] {
+  flex: 1;
+  background: #1e1e1e;
+  color: #ccc;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
+
+/* Loading */
+.loading {
+  margin-top: 15px;
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Result UI */
+.label {
+  color: #aaa;
+  margin-top: 15px;
 }
 
 .meter {
@@ -37,25 +86,10 @@ h1 {
   transition: width 0.5s ease;
 }
 
-#permissionBox {
-  margin-top: 20px;
-}
-
-ul {
-  padding-left: 18px;
-}
-
 .buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
-}
-
-button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
 }
 
 button.danger {
