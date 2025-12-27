@@ -1,35 +1,51 @@
 const data = JSON.parse(localStorage.getItem("scanResult"));
 
+// 🔒 If no data, go back silently
 if (!data) {
-  alert("No scan data found");
+  window.location.href = "index.html";
 } else {
-  // Score & level
+
+  // =========================
+  // Risk Score & Prediction
+  // =========================
   document.getElementById("riskScore").innerText = data.risk_score;
   document.getElementById("riskLevel").innerText = data.risk_level;
 
-  // Risk meter
+  // =========================
+  // Risk Meter
+  // =========================
   const meter = document.getElementById("meterFill");
   meter.style.width = data.risk_score + "%";
 
+  const riskLevelEl = document.getElementById("riskLevel");
+
   if (data.risk_level === "High Risk") {
     meter.style.background = "red";
-    document.getElementById("riskLevel").style.color = "red";
+    riskLevelEl.style.color = "red";
   } else if (data.risk_level === "Medium Risk") {
     meter.style.background = "orange";
-    document.getElementById("riskLevel").style.color = "orange";
+    riskLevelEl.style.color = "orange";
   } else {
     meter.style.background = "green";
-    document.getElementById("riskLevel").style.color = "green";
+    riskLevelEl.style.color = "green";
   }
 
-  // Permissions list
+  // =========================
+  // Dangerous Permissions
+  // =========================
   const list = document.getElementById("permissionList");
-  if (data.dangerous_permissions.length === 0) {
-    list.innerHTML = "<li>No dangerous permissions detected</li>";
+  list.innerHTML = "";
+
+  if (!data.dangerous_permissions || data.dangerous_permissions.length === 0) {
+    const li = document.createElement("li");
+    li.innerText = "No dangerous permissions detected ✅";
+    li.style.color = "#9ca3af";
+    list.appendChild(li);
   } else {
     data.dangerous_permissions.forEach(p => {
       const li = document.createElement("li");
       li.innerText = `${p.permission} – ${p.risk}`;
+      li.style.color = "#f87171";
       list.appendChild(li);
     });
   }

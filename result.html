@@ -3,40 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Scan Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="app">
   <div class="card">
-
     <h2>📊 Scan Result</h2>
 
-    <!-- Risk Score -->
     <p class="label">Risk Score</p>
     <h1 id="riskScore">--</h1>
 
-    <!-- Prediction -->
     <p class="label">Prediction</p>
     <h2 id="riskLevel">--</h2>
 
-    <!-- Risk Meter -->
     <div class="meter">
       <div id="meterFill"></div>
     </div>
 
-    <!-- 🔥 DANGEROUS PERMISSIONS (THIS WAS MISSING) -->
-    <div id="permissionBox" style="margin-top:18px">
-      <h4 style="margin-bottom:8px">⚠️ Dangerous Permissions</h4>
+    <div id="permissionBox">
+      <h4>⚠️ Dangerous Permissions</h4>
       <ul id="permissionList"></ul>
     </div>
 
-    <!-- Buttons -->
     <div class="buttons">
       <button class="danger">Install Anyway</button>
       <button class="safe" onclick="location.href='index.html'">Cancel</button>
     </div>
-
   </div>
 </div>
 

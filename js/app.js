@@ -1,11 +1,12 @@
 const BACKEND_URL = "https://sbi-backend.onrender.com";
 
+console.log("SBI Frontend FINAL – silent warmup");
+
 async function wakeBackend() {
   try {
     await fetch(`${BACKEND_URL}/`);
-    return true;
-  } catch {
-    return false;
+  } catch (e) {
+    console.log("Backend still waking...");
   }
 }
 
@@ -14,13 +15,12 @@ async function scanApk() {
   const loading = document.getElementById("loading");
 
   if (!fileInput || fileInput.files.length === 0) {
-    alert("Please select an APK file");
-    return;
+    return; // ❌ no alert
   }
 
   loading.classList.remove("hidden");
 
-  // 🔔 Wake backend first
+  // 🔔 Wake backend first (silent)
   await wakeBackend();
 
   const file = fileInput.files[0];
@@ -30,7 +30,7 @@ async function scanApk() {
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const controller = new AbortController();
-      setTimeout(() => controller.abort(), 90000); // 90 sec
+      setTimeout(() => controller.abort(), 90000);
 
       const response = await fetch(`${BACKEND_URL}/scan`, {
         method: "POST",
@@ -38,7 +38,7 @@ async function scanApk() {
         signal: controller.signal
       });
 
-      if (!response.ok) throw new Error("Server not ready");
+      if (!response.ok) throw new Error("Backend not ready");
 
       const data = await response.json();
       loading.classList.add("hidden");
@@ -48,14 +48,10 @@ async function scanApk() {
       return;
 
     } catch (err) {
-      if (attempt === 1) {
-        console.log("Cold start detected, retrying...");
-        await new Promise(res => setTimeout(res, 40000));
-      } else {
-        loading.classList.add("hidden");
-        alert("Server warming up. Please retry once more.");
-        return;
-      }
+      console.log("Backend warming silently...");
+      await new Promise(res => setTimeout(res, 40000));
     }
   }
+
+  loading.classList.add("hidden");
 }
