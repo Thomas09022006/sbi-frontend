@@ -1,10 +1,17 @@
+/* ===============================
+   GLOBAL
+=============================== */
 body {
   background: #0f2027;
   font-family: Arial, sans-serif;
   color: white;
+  margin: 0;
+  padding: 0;
 }
 
-/* Card */
+/* ===============================
+   CARD
+=============================== */
 .card {
   width: 350px;
   margin: 40px auto;
@@ -22,7 +29,9 @@ body {
   margin-bottom: 10px;
 }
 
-/* Buttons */
+/* ===============================
+   BUTTONS
+=============================== */
 .btn {
   padding: 10px 18px;
   border-radius: 8px;
@@ -37,11 +46,14 @@ body {
   color: white;
 }
 
-/* Upload alignment */
+/* ===============================
+   UPLOAD ROW
+=============================== */
 .upload-row {
   display: flex;
   gap: 12px;
   margin-top: 15px;
+  align-items: center;
 }
 
 .upload-row input[type="file"] {
@@ -53,7 +65,9 @@ body {
   border: 1px solid #333;
 }
 
-/* Loading */
+/* ===============================
+   LOADING
+=============================== */
 .loading {
   margin-top: 15px;
   color: #60a5fa;
@@ -64,7 +78,9 @@ body {
   display: none;
 }
 
-/* Result UI */
+/* ===============================
+   RESULT UI
+=============================== */
 .label {
   color: #aaa;
   margin-top: 15px;
@@ -92,6 +108,13 @@ body {
   margin-top: 20px;
 }
 
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 button.danger {
   background: #ff4d4d;
   color: white;
@@ -100,4 +123,22 @@ button.danger {
 button.safe {
   background: #3b82f6;
   color: white;
+}
+
+/* ===============================
+   MOBILE VIEW FIX (IMPORTANT)
+=============================== */
+@media (max-width: 600px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 360px;
+    margin: 0;
+  }
 }
